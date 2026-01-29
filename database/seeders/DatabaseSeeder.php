@@ -21,5 +21,12 @@ class DatabaseSeeder extends Seeder
             CategorySeeder::class,
             ProductSeeder::class,
         ]);
+
+        \App\Models\User::factory()->create([
+            'name' => 'Virgilio Aguirre',
+            'email' => 'aguirrevirgilio17@gmail.com',
+            'password' => bcrypt('password'), // Or any default password, user can reset
+            'is_admin' => true,
+        ]);
     }
 }

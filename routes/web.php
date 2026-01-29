@@ -47,4 +47,12 @@ Route::get('/checkout', [OrderController::class, 'create'])->name('checkout.crea
 Route::post('/checkout', [OrderController::class, 'store'])->name('checkout.store');
 Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
 
+// Admin Routes
+Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/users', [\App\Http\Controllers\Admin\UserController::class, 'index'])->name('users.index');
+    Route::patch('/users/{user}/toggle-admin', [\App\Http\Controllers\Admin\UserController::class, 'toggleAdmin'])->name('users.toggle-admin');
+
+    Route::resource('products', \App\Http\Controllers\Admin\ProductController::class);
+});
+
 require __DIR__.'/auth.php';

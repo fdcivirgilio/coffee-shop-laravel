@@ -44,6 +44,14 @@ export default function ShopLayout({ user, header, children }) {
                         </div>
 
                         <div className="hidden sm:flex sm:items-center sm:ms-6">
+                            {auth.user?.is_admin && (
+                                <Link
+                                    href={route('admin.users.index')}
+                                    className="text-sm font-medium text-coffee-600 hover:text-coffee-800 mr-4"
+                                >
+                                    Admin Dashboard
+                                </Link>
+                            )}
                             {auth.user ? (
                                 <div className="ms-3 relative">
                                     <Dropdown>
