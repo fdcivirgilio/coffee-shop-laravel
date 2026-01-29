@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, usePage } from '@inertiajs/react';
 import ApplicationLogo from '@/Components/ApplicationLogo';
 import Dropdown from '@/Components/Dropdown';
@@ -7,7 +7,16 @@ import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
 
 export default function ShopLayout({ user, header, children }) {
     const [showingNavigationDropdown, setShowingNavigationDropdown] = useState(false);
-    const { auth } = usePage().props;
+    const { auth, flash } = usePage().props;
+    const [showToast, setShowToast] = useState(false);
+
+    useEffect(() => {
+        if (flash.success || flash.error) {
+            setShowToast(true);
+            const timer = setTimeout(() => setShowToast(false), 3000);
+            return () => clearTimeout(timer);
+        }
+    }, [flash]);
 
     return (
         <div className="min-h-screen bg-coffee-50 flex flex-col justify-between">
@@ -145,7 +154,14 @@ export default function ShopLayout({ user, header, children }) {
                 </div>
             </nav>
 
-            <main className="flex-grow">{children}</main>
+            <main className="flex-grow">
+                {showToast && (flash.success || flash.error) && (
+                    <div className={`fixed top-4 right-4 z-50 px-6 py-4 rounded shadow-lg text-white transition-opacity duration-300 ${flash.success ? 'bg-green-600' : 'bg-red-600'}`}>
+                        {flash.success || flash.error}
+                    </div>
+                )}
+                {children}
+            </main>
 
             <footer className="bg-coffee-900 text-cream py-8 mt-12">
                 <div className="max-w-7xl mx-auto px-4 text-center">
