@@ -8,6 +8,7 @@ use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
@@ -35,8 +36,13 @@ class ProductController extends Controller
             'price' => 'required|numeric|min:0',
             'category_id' => 'required|exists:categories,id',
             'stock' => 'required|integer|min:0',
-            'image_url' => 'nullable|url', // Allowing external URL for simplicity or file upload
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
+
+        $imagePath = null;
+        if ($request->hasFile('image')) {
+            $imagePath = '/storage/' . $request->file('image')->store('products', 'public');
+        }
 
         $slug = Str::slug($request->name);
         $originalSlug = $slug;
@@ -52,7 +58,7 @@ class ProductController extends Controller
             'price' => $request->price,
             'category_id' => $request->category_id,
             'stock' => $request->stock,
-            'image' => $request->image_url,
+            'image' => $imagePath,
             'is_active' => true,
         ]);
 
@@ -76,8 +82,18 @@ class ProductController extends Controller
             'price' => 'required|numeric|min:0',
             'category_id' => 'required|exists:categories,id',
             'stock' => 'required|integer|min:0',
-            'image_url' => 'nullable|url',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
+
+        $imagePath = $product->image;
+
+        if ($request->hasFile('image')) {
+            // Delete old image if it exists and is stored locally
+            if ($product->image && str_starts_with($product->image, '/storage/')) {
+                Storage::disk('public')->delete(str_replace('/storage/', '', $product->image));
+            }
+            $imagePath = '/storage/' . $request->file('image')->store('products', 'public');
+        }
 
         if ($request->name !== $product->name) {
              $slug = Str::slug($request->name);
@@ -94,7 +110,7 @@ class ProductController extends Controller
             'price' => $request->price,
             'category_id' => $request->category_id,
             'stock' => $request->stock,
-            'image' => $request->image_url,
+            'image' => $imagePath,
         ]);
 
         return redirect()->route('admin.products.index')->with('success', 'Product updated successfully.');

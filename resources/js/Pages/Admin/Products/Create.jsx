@@ -4,22 +4,18 @@ import { Head, useForm, Link } from '@inertiajs/react';
 export default function Form({ auth, categories, product = null }) {
     const isEditing = !!product;
 
-    const { data, setData, post, put, processing, errors } = useForm({
+    const { data, setData, post, processing, errors } = useForm({
         name: product?.name || '',
         description: product?.description || '',
         price: product?.price || '',
         category_id: product?.category_id || (categories[0]?.id || ''),
         stock: product?.stock || '0',
-        image_url: product?.image || '',
+        image: null,
     });
 
     const submit = (e) => {
         e.preventDefault();
-        if (isEditing) {
-            put(route('admin.products.update', product.id));
-        } else {
-            post(route('admin.products.store'));
-        }
+        post(route('admin.products.store'));
     };
 
     return (
@@ -102,15 +98,39 @@ export default function Form({ auth, categories, product = null }) {
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-gray-700">Image URL</label>
-                                <input
-                                    type="url"
-                                    value={data.image_url}
-                                    placeholder="https://example.com/image.jpg"
-                                    onChange={e => setData('image_url', e.target.value)}
-                                    className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-coffee-500 focus:border-coffee-500 sm:text-sm"
-                                />
-                                {errors.image_url && <div className="text-red-500 text-xs mt-1">{errors.image_url}</div>}
+                                <label className="block text-sm font-medium text-gray-700">Product Image</label>
+                                <div className="mt-2 flex items-center space-x-6">
+                                    <div className="flex-shrink-0">
+                                        {data.image ? (
+                                            <img
+                                                src={URL.createObjectURL(data.image)}
+                                                alt="Preview"
+                                                className="h-24 w-24 object-cover rounded-lg border-2 border-coffee-100 shadow-sm"
+                                            />
+                                        ) : (
+                                            <div className="h-24 w-24 rounded-lg bg-gray-50 border-2 border-dashed border-gray-200 flex items-center justify-center text-gray-400">
+                                                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                                </svg>
+                                            </div>
+                                        )}
+                                    </div>
+                                    <div className="flex-grow">
+                                        <label className="relative cursor-pointer bg-white rounded-md font-medium text-coffee-600 hover:text-coffee-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-coffee-500">
+                                            <span className="inline-flex items-center px-4 py-2 border border-coffee-300 rounded-md shadow-sm text-sm font-medium text-coffee-700 bg-white hover:bg-coffee-50">
+                                                Select Image from Computer
+                                            </span>
+                                            <input
+                                                type="file"
+                                                className="sr-only"
+                                                onChange={e => setData('image', e.target.files[0])}
+                                                accept="image/*"
+                                            />
+                                        </label>
+                                        <p className="mt-1 text-xs text-gray-500">PNG, JPG, GIF up to 2MB</p>
+                                    </div>
+                                </div>
+                                {errors.image && <div className="text-red-500 text-sm mt-2">{errors.image}</div>}
                             </div>
 
                             <div className="flex justify-end">
