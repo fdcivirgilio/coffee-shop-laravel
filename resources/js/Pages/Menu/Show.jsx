@@ -21,11 +21,22 @@ export default function Show({ auth, product }) {
             <div className="py-12">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="bg-white rounded-lg shadow-xl overflow-hidden md:flex">
-                        <div className="md:w-1/2">
+                        <div
+                            className="md:w-1/2 overflow-hidden cursor-zoom-in relative"
+                            onMouseMove={(e) => {
+                                const { left, top, width, height } = e.currentTarget.getBoundingClientRect();
+                                const x = ((e.pageX - left) / width) * 100;
+                                const y = ((e.pageY - top) / height) * 100;
+                                e.currentTarget.querySelector('img').style.transformOrigin = `${x}% ${y}%`;
+                            }}
+                            onMouseLeave={(e) => {
+                                e.currentTarget.querySelector('img').style.transformOrigin = 'center center';
+                            }}
+                        >
                             <img
                                 src={product.image || 'https://placehold.co/600x600?text=Coffee'}
                                 alt={product.name}
-                                className="w-full h-full object-cover"
+                                className="w-full h-full object-cover transition-transform duration-200 ease-out transform hover:scale-150"
                             />
                         </div>
                         <div className="p-8 md:w-1/2 flex flex-col justify-center">

@@ -64,11 +64,11 @@ class OrderController extends Controller
                 'user_id' => Auth::id(), // Nullable if guest
                 'total_amount' => $total,
                 'status' => 'pending',
-                'shipping_address' => json_encode([
+                'shipping_address' => [
                     'address' => $request->address,
                     'city' => $request->city,
                     'zip' => $request->zip,
-                ]),
+                ],
             ]);
 
             foreach ($cart->items as $item) {

@@ -18,9 +18,14 @@ export default function Users({ auth, users }) {
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between items-center mb-6">
                         <h1 className="text-3xl font-extrabold text-coffee-900">User Management</h1>
-                        <Link href={route('admin.products.index')} className="text-coffee-600 hover:text-coffee-800 font-medium">
-                            Manage Products &rarr;
-                        </Link>
+                        <div className="flex space-x-4">
+                            <Link href={route('admin.products.index')} className="text-coffee-600 hover:text-coffee-800 font-medium">
+                                Products
+                            </Link>
+                            <Link href={route('admin.orders.index')} className="text-coffee-600 hover:text-coffee-800 font-medium">
+                                Orders
+                            </Link>
+                        </div>
                     </div>
 
                     <div className="bg-white shadow overflow-hidden sm:rounded-lg">

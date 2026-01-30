@@ -20,7 +20,10 @@ export default function Index({ auth, products }) {
                         <h1 className="text-3xl font-extrabold text-coffee-900">Product Management</h1>
                         <div className="flex space-x-4">
                             <Link href={route('admin.users.index')} className="text-coffee-600 hover:text-coffee-800 font-medium py-2">
-                                &larr; Users
+                                Users
+                            </Link>
+                            <Link href={route('admin.orders.index')} className="text-coffee-600 hover:text-coffee-800 font-medium py-2">
+                                Orders
                             </Link>
                             <Link
                                 href={route('admin.products.create')}
